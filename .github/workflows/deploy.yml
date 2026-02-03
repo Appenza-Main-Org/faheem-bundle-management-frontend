@@ -36,7 +36,7 @@ jobs:
         run: npm run build
         env:
           # Build-time environment variable for backend API URL
-          VITE_API_URL: https://be-app-dev-bundle.kindsmoke-ce032c34.swedencentral.azurecontainerapps.io
+          VITE_API_URL: https://bundle-dev.faheem-ai.app
 
       - name: Deploy to Azure Static Web App
         uses: Azure/static-web-apps-deploy@v1
