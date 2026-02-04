@@ -1,0 +1,64 @@
+# ==============================================================
+# GitHub Actions Workflow: Deploy Bundle Frontend to Testing Static Web App
+# ==============================================================
+# Required GitHub Secrets:
+# - AZURE_STATIC_WEB_APPS_API_TOKEN_TEST: Deployment token from Testing Static Web App
+# ==============================================================
+
+name: Deploy to Testing Static Web App
+
+on:
+  push:
+    branches: [testing-new]
+  pull_request:
+    types: [opened, synchronize, reopened, closed]
+    branches: [testing-new]
+
+jobs:
+  build_and_deploy:
+    if: github.event_name == 'push' || (github.event_name == 'pull_request' && github.event.action != 'closed')
+    runs-on: ubuntu-latest
+    name: Build and Deploy
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          submodules: true
+          lfs: false
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build application
+        run: npm run build
+        env:
+          VITE_API_URL: https://bundle-test.faheem-ai.app
+
+      - name: Deploy to Azure Static Web App
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TEST }}
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          action: "upload"
+          skip_app_build: true
+          app_location: "dist"
+          output_location: ""
+
+  close_pull_request:
+    if: github.event_name == 'pull_request' && github.event.action == 'closed'
+    runs-on: ubuntu-latest
+    name: Close Pull Request
+
+    steps:
+      - name: Close Pull Request
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TEST }}
+          action: "close"
