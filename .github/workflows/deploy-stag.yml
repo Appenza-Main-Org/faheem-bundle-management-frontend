@@ -1,13 +1,13 @@
-name: Deploy to Azure Static Web App (Test)
+name: Deploy to Azure Static Web App (Staging)
 
 on:
   push:
     branches:
-      - testing
+      - staging
   pull_request:
     types: [opened, synchronize, reopened, closed]
     branches:
-      - testing
+      - staging
 
 jobs:
   build_and_deploy:
@@ -36,12 +36,12 @@ jobs:
         run: npm run build
         env:
           # Build-time environment variable for backend API URL
-          VITE_API_URL: https://bundle-api-test.faheem-ai.app
+          VITE_API_URL: https://bundle-stag.faheem-ai.app
 
       - name: Deploy to Azure Static Web App
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TEST }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_STAG }}
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
           # Build is already done above, so skip build in this action
@@ -59,5 +59,5 @@ jobs:
       - name: Close Pull Request
         uses: Azure/static-web-apps-deploy@v1
         with:
-          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_TEST }}
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_STAG }}
           action: "close"
