@@ -1,0 +1,20 @@
+# ==============================================================
+# GitHub Actions Workflow: Production Deploy (placeholder)
+# ==============================================================
+# This workflow will be configured when production deployment is ready.
+# Currently restricted to authorized user only.
+# ==============================================================
+
+name: Deploy to Production
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  gate:
+    runs-on: ubuntu-latest
+    if: github.actor == 'msayed-net'
+    steps:
+      - name: Production deploy placeholder
+        run: echo "Production deployment not yet configured. Push by ${{ github.actor }} acknowledged."
